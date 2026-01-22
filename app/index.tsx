@@ -3,7 +3,7 @@ import { BarcodeScanner } from "./BarcodeScanner";
 
 export default function Index() {
   return (
-    <View>
+    <View style={{ flex: 1 }}>
       <BarcodeScanner />
     </View>
   );
