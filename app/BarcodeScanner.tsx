@@ -7,10 +7,12 @@ import {
   useCodeScanner,
 } from "react-native-vision-camera";
 import { PermissionsPage } from "./PermissionsPage";
+import { BarcodeBounds } from "./types";
 
 export function BarcodeScanner() {
   const [isTorch, setIsTorch] = useState(false);
   const [isCameraEnabled, setIsCameraEnabled] = useState(false);
+  const [barcode, setBarcode] = useState<BarcodeBounds | null>(null);
 
   const { hasPermission, requestPermission } = useCameraPermission();
 
