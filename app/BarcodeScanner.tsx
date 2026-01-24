@@ -1,11 +1,6 @@
 import { useEffect, useState } from "react";
 import { Button, StyleSheet, View } from "react-native";
-import {
-  Camera,
-  useCameraDevice,
-  useCameraPermission,
-  useCodeScanner,
-} from "react-native-vision-camera";
+import { Camera, useCameraDevice, useCameraPermission, useCodeScanner } from "react-native-vision-camera";
 import { PermissionsPage } from "./PermissionsPage";
 import { BarcodeBounds } from "./types";
 
@@ -40,8 +35,7 @@ export function BarcodeScanner() {
 
   const device = useCameraDevice("back");
 
-  if (!hasPermission)
-    return <PermissionsPage requestPermission={requestPermission} />;
+  if (!hasPermission) return <PermissionsPage requestPermission={requestPermission} />;
   if (device == null) return null;
 
   return (
@@ -54,14 +48,9 @@ export function BarcodeScanner() {
         codeScanner={codeScanner}
       />
       <View style={styles.actions}>
-        {!hasPermission && (
-          <Button title="Request Permission" onPress={requestPermission} />
-        )}
+        {!hasPermission && <Button title="Request Permission" onPress={requestPermission} />}
         <Button title="torch" onPress={() => setIsTorch((prev) => !prev)} />
-        <Button
-          title="camera"
-          onPress={() => setIsCameraEnabled((prev) => !prev)}
-        />
+        <Button title="camera" onPress={() => setIsCameraEnabled((prev) => !prev)} />
       </View>
     </View>
   );
