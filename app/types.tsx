@@ -1,4 +1,4 @@
-export type BarcodeBounds = {
+export type BarcodeBoundsType = {
   top: number;
   left: number;
   width: number;

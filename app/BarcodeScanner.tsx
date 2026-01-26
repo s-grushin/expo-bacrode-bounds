@@ -2,14 +2,15 @@ import { useEffect, useState } from "react";
 import { Button, StyleSheet, View } from "react-native";
 import { Camera, useCameraDevice, useCameraPermission, useCodeScanner } from "react-native-vision-camera";
 import { PermissionsPage } from "./PermissionsPage";
-import { BarcodeBounds } from "./types";
+import { BarcodeBoundsType } from "./types";
+import { BarcodeBounds } from "./BarcodeBounds";
 
-const SCAN_DELAY = 2000;
+const SCAN_DELAY = 1000;
 
 export function BarcodeScanner() {
 	const [isTorch, setIsTorch] = useState(false);
 	const [isCameraEnabled, setIsCameraEnabled] = useState(false);
-	const [barcode, setBarcode] = useState<BarcodeBounds | null>(null);
+	const [barcodeBounds, setBarcodeBounds] = useState<BarcodeBoundsType | null>(null);
 	const [isReadyForScan, setIsReadyForScan] = useState(true);
 
 	const { hasPermission, requestPermission } = useCameraPermission();
@@ -28,7 +29,20 @@ export function BarcodeScanner() {
 		codeTypes: ["ean-13"],
 		onCodeScanned: codes => {
 			if (!isReadyForScan) return;
-			console.log("codes", JSON.stringify(codes, null, 2));
+			const [code] = codes;
+			//console.log("codes", JSON.stringify(codes, null, 2));
+			console.log("code", JSON.stringify(code, null, 2));
+			const { frame } = code;
+			if (!frame) return;
+
+			const newBarcodeBounds: BarcodeBoundsType = {
+				top: frame.y,
+				left: frame.x - frame.width,
+				width: frame.width,
+				height: frame.height
+			};
+			setBarcodeBounds(newBarcodeBounds);
+			setTimeout(() => setBarcodeBounds(null), 500);
 			setIsReadyForScan(false);
 		}
 	});
@@ -63,6 +77,8 @@ export function BarcodeScanner() {
 					onPress={() => setIsCameraEnabled(prev => !prev)}
 				/>
 			</View>
+
+			<BarcodeBounds barcodeBounds={barcodeBounds} />
 		</View>
 	);
 }
