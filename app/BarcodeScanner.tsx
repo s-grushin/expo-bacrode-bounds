@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import { Button, StyleSheet, View } from "react-native";
+import { Button, LayoutChangeEvent, StyleSheet, View } from "react-native";
 import { Camera, useCameraDevice, useCameraPermission, useCodeScanner } from "react-native-vision-camera";
+import { BarcodeBounds } from "./BarcodeBounds";
 import { PermissionsPage } from "./PermissionsPage";
 import { BarcodeBoundsType } from "./types";
-import { BarcodeBounds } from "./BarcodeBounds";
 
 const SCAN_DELAY = 1000;
 
@@ -25,13 +25,18 @@ export function BarcodeScanner() {
 		};
 	}, [isReadyForScan]);
 
+	const handleOnCameraLayout = (event: LayoutChangeEvent) => {
+		console.log("Camera layout", JSON.stringify(event.nativeEvent.layout, null, 2));
+	};
+
 	const codeScanner = useCodeScanner({
 		codeTypes: ["ean-13"],
-		onCodeScanned: codes => {
+		onCodeScanned: (codes, codeScannerFrame) => {
 			if (!isReadyForScan) return;
 			const [code] = codes;
 			//console.log("codes", JSON.stringify(codes, null, 2));
 			console.log("code", JSON.stringify(code, null, 2));
+			console.log("codeScannerFrame", JSON.stringify(codeScannerFrame, null, 2));
 			const { frame } = code;
 			if (!frame) return;
 
@@ -60,6 +65,7 @@ export function BarcodeScanner() {
 				isActive={isCameraEnabled}
 				torch={isTorch ? "on" : "off"}
 				codeScanner={codeScanner}
+				onLayout={handleOnCameraLayout}
 			/>
 			<View style={styles.actions}>
 				{!hasPermission && (
