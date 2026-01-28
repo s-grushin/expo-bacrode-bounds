@@ -1,6 +1,12 @@
 import { useEffect, useState } from "react";
-import { Button, StyleSheet, View } from "react-native";
-import { Camera, useCameraDevice, useCameraPermission, useCodeScanner } from "react-native-vision-camera";
+import { Button, LayoutChangeEvent, StyleSheet, View } from "react-native";
+import {
+	Camera,
+	useCameraDevice,
+	useCameraPermission,
+	useCodeScanner,
+	useCameraFormat
+} from "react-native-vision-camera";
 import { PermissionsPage } from "./PermissionsPage";
 import { BarcodeBoundsType } from "./types";
 import { BarcodeBounds } from "./BarcodeBounds";
@@ -27,11 +33,12 @@ export function BarcodeScanner() {
 
 	const codeScanner = useCodeScanner({
 		codeTypes: ["ean-13"],
-		onCodeScanned: codes => {
+		onCodeScanned: (codes, cameraFrame) => {
 			if (!isReadyForScan) return;
 			const [code] = codes;
 			//console.log("codes", JSON.stringify(codes, null, 2));
-			console.log("code", JSON.stringify(code, null, 2));
+			console.log("code.frame", JSON.stringify(code.frame, null, 2));
+			console.log("cameraFrame", JSON.stringify(cameraFrame, null, 2));
 			const { frame } = code;
 			if (!frame) return;
 
@@ -47,19 +54,27 @@ export function BarcodeScanner() {
 		}
 	});
 
+	const handleContainerLayout = (event: LayoutChangeEvent) => {
+		console.log("container layout:", JSON.stringify(event.nativeEvent.layout, null, 2));
+	};
+
 	const device = useCameraDevice("back");
 
 	if (!hasPermission) return <PermissionsPage requestPermission={requestPermission} />;
 	if (device == null) return null;
 
 	return (
-		<View style={styles.container}>
+		<View
+			style={styles.container}
+			onLayout={handleContainerLayout}
+		>
 			<Camera
 				style={StyleSheet.absoluteFill}
 				device={device}
 				isActive={isCameraEnabled}
 				torch={isTorch ? "on" : "off"}
 				codeScanner={codeScanner}
+				resizeMode="contain"
 			/>
 			<View style={styles.actions}>
 				{!hasPermission && (
