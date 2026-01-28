@@ -3,6 +3,7 @@ import { Button, LayoutChangeEvent, StyleSheet, View } from "react-native";
 import { Camera, useCameraDevice, useCameraPermission, useCodeScanner } from "react-native-vision-camera";
 import { PermissionsPage } from "./PermissionsPage";
 import { BarcodeBoundsType } from "./types";
+import { BarcodeBounds } from "./BarcodeBounds";
 
 const SCAN_DELAY = 1000;
 
