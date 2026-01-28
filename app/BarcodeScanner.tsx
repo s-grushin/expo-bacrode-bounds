@@ -1,15 +1,8 @@
 import { useEffect, useState } from "react";
 import { Button, LayoutChangeEvent, StyleSheet, View } from "react-native";
-import {
-	Camera,
-	useCameraDevice,
-	useCameraPermission,
-	useCodeScanner,
-	useCameraFormat
-} from "react-native-vision-camera";
+import { Camera, useCameraDevice, useCameraPermission, useCodeScanner } from "react-native-vision-camera";
 import { PermissionsPage } from "./PermissionsPage";
 import { BarcodeBoundsType } from "./types";
-import { BarcodeBounds } from "./BarcodeBounds";
 
 const SCAN_DELAY = 1000;
 
@@ -30,6 +23,10 @@ export function BarcodeScanner() {
 			clearTimeout(timerId);
 		};
 	}, [isReadyForScan]);
+
+	const handleOnCameraLayout = (event: LayoutChangeEvent) => {
+		console.log("Camera layout", JSON.stringify(event.nativeEvent.layout, null, 2));
+	};
 
 	const codeScanner = useCodeScanner({
 		codeTypes: ["ean-13"],
