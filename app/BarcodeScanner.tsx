@@ -54,11 +54,18 @@ export function BarcodeScanner() {
 
 	const device = useCameraDevice("back");
 
+	const handleContainerOnLayout = (event: LayoutChangeEvent) => {
+		console.log("container layout", JSON.stringify(event.nativeEvent.layout, null, 2));
+	};
+
 	if (!hasPermission) return <PermissionsPage requestPermission={requestPermission} />;
 	if (device == null) return null;
 
 	return (
-		<View style={styles.container}>
+		<View
+			style={styles.container}
+			onLayout={handleContainerOnLayout}
+		>
 			<Camera
 				style={StyleSheet.absoluteFill}
 				device={device}
