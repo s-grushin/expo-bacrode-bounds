@@ -31,12 +31,12 @@ export function BarcodeScanner() {
 
 	const codeScanner = useCodeScanner({
 		codeTypes: ["ean-13"],
-		onCodeScanned: (codes, codeScannerFrame) => {
+		onCodeScanned: (codes, cameraFrame) => {
 			if (!isReadyForScan) return;
 			const [code] = codes;
 			//console.log("codes", JSON.stringify(codes, null, 2));
-			console.log("code", JSON.stringify(code, null, 2));
-			console.log("codeScannerFrame", JSON.stringify(codeScannerFrame, null, 2));
+			console.log("code.frame", JSON.stringify(code.frame, null, 2));
+			console.log("cameraFrame", JSON.stringify(cameraFrame, null, 2));
 			const { frame } = code;
 			if (!frame) return;
 
@@ -51,6 +51,10 @@ export function BarcodeScanner() {
 			setIsReadyForScan(false);
 		}
 	});
+
+	const handleContainerLayout = (event: LayoutChangeEvent) => {
+		console.log("container layout:", JSON.stringify(event.nativeEvent.layout, null, 2));
+	};
 
 	const device = useCameraDevice("back");
 
@@ -72,7 +76,7 @@ export function BarcodeScanner() {
 				isActive={isCameraEnabled}
 				torch={isTorch ? "on" : "off"}
 				codeScanner={codeScanner}
-				onLayout={handleOnCameraLayout}
+				resizeMode="contain"
 			/>
 			<View style={styles.actions}>
 				{!hasPermission && (
